@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CryptoTrack — Live Crypto Prices</title>
+<style>
+:root{color-scheme:dark;--bg:#080d1b;--panel:#101a2e;--panel2:#0d1628;--line:#23314c;--text:#edf3ff;--muted:#91a4c5;--blue:#4c82ff;--green:#18d99a;--red:#ff667b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#142344 0,#080d1b 50%);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+header{height:72px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 4%;gap:22px;position:sticky;top:0;background:#080d1beF;backdrop-filter:blur(12px);z-index:4}
+.brand{font-size:22px;font-weight:800;letter-spacing:-.6px;white-space:nowrap}.brand span{color:#6592ff}.nav{display:flex;gap:22px;color:var(--muted)}.nav a{color:inherit;text-decoration:none}.nav a.active,.nav a:hover{color:white}
+.search{width:min(350px,32vw);background:#0e1830;border:1px solid #2c3d60;border-radius:10px;padding:10px 14px;color:white;outline:none}
+main{max-width:1450px;margin:auto;padding:30px 4% 60px}.hero{display:flex;align-items:end;justify-content:space-between;gap:20px;margin:12px 0 25px}.hero h1{font-size:clamp(27px,4vw,43px);line-height:1.1;margin:0 0 10px;letter-spacing:-1.5px}.hero p{color:var(--muted);margin:0;font-size:16px}.status{color:var(--green);font-size:12px;white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:25px 0}.stat,.panel{background:linear-gradient(145deg,#111d34,#0c1425);border:1px solid var(--line);border-radius:14px}.stat{padding:18px 20px}.stat label{color:var(--muted)}.stat strong{display:block;font-size:25px;margin:5px 0}.positive{color:var(--green)}.negative{color:var(--red)}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:24px 0 14px;flex-wrap:wrap}.tabs{display:flex;gap:8px;flex-wrap:wrap}.tab,select{background:#111b2f;color:#cbd8f1;border:1px solid #293753;border-radius:9px;padding:9px 15px;cursor:pointer}.tab.active{background:linear-gradient(135deg,#456fff,#6551e8);border-color:transparent;color:white}
+.table-wrap{overflow:auto}.panel{overflow:hidden}.table{width:100%;border-collapse:collapse;min-width:850px}.table th{font-weight:500;color:var(--muted);text-align:right;padding:14px 16px;background:#101a2d;border-bottom:1px solid var(--line);white-space:nowrap}.table th:first-child,.table td:first-child,.table th:nth-child(2),.table td:nth-child(2){text-align:left}.table td{text-align:right;padding:15px 16px;border-bottom:1px solid #1d2a42;white-space:nowrap}.table tr:last-child td{border-bottom:0}.table tbody tr:hover{background:#14213a}.coin{display:flex;align-items:center;gap:12px;text-align:left}.coin img{width:30px;height:30px}.coin-name{font-weight:650}.symbol{color:var(--muted);font-size:12px;margin-left:7px}.star{background:none;border:0;color:#7184a8;font-size:19px;cursor:pointer}.star.on{color:#ffd166}.spark{width:95px;height:28px}
+footer{text-align:center;color:var(--muted);padding:22px;font-size:12px}
+@media(max-width:900px){.nav{display:none}.stats{grid-template-columns:repeat(2,1fr)}.hero{align-items:start;flex-direction:column}header{padding:0 18px}main{padding:22px 18px}}
+@media(max-width:600px){
+ body{font-size:13px}
+ header{height:auto;min-height:64px;padding:12px 14px;gap:10px;flex-wrap:wrap}
+ .brand{font-size:19px}
+ .search{order:3;width:100%;max-width:none;padding:11px 13px}
+ main{padding:18px 12px 35px}
+ .hero{margin:7px 0 18px;gap:8px}
+ .hero h1{font-size:28px;letter-spacing:-.8px}
+ .hero p{font-size:14px}
+ .status{font-size:11px}
+ .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:17px 0}
+ .stat{padding:12px;border-radius:11px;min-width:0}
+ .stat label{font-size:11px}
+ .stat strong{font-size:19px;overflow-wrap:anywhere;margin:4px 0}
+ .stat span{font-size:11px}
+ .toolbar{margin:17px 0 11px;align-items:stretch}
+ .tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;gap:7px}
+ .tab{padding:10px 7px;font-size:12px}
+ #currency{width:100%;padding:10px}
+ .panel{border-radius:10px}
+ .table-wrap{overflow:visible;border:0;background:transparent}
+ .table{min-width:0;display:block}
+ .table thead{display:none}
+ .table tbody{display:grid;gap:9px}
+ .table tr{display:grid;grid-template-columns:1fr auto;gap:6px 10px;padding:12px;background:linear-gradient(145deg,#111d34,#0c1425);border:1px solid var(--line);border-radius:12px}
+ .table td{padding:0;border:0;text-align:left;white-space:normal}
+ .table td:first-child{display:none}
+ .table td:nth-child(2){grid-column:1;grid-row:1}
+ .table td:nth-child(3){grid-column:2;grid-row:1;text-align:right;font-size:15px}
+ .table td:nth-child(4){grid-column:2;grid-row:2;text-align:right}
+ .table td:nth-child(5){grid-column:1;grid-row:2;color:var(--muted);font-size:11px}
+ .table td:nth-child(6){grid-column:1;grid-row:3;color:var(--muted);font-size:11px}
+ .table td:nth-child(7){grid-column:2;grid-row:3;justify-self:end}
+ .table td:nth-child(8){grid-column:2;grid-row:1;justify-self:end;margin-right:0;transform:translateX(22px)}
+ .coin{gap:8px;padding-right:20px}
+ .coin img{width:27px;height:27px}
+ .coin-name{font-size:13px}
+ .symbol{margin-left:5px}
+ .spark{width:75px}
+ footer{padding:18px 8px;font-size:11px}
+}
+@media(max-width:360px){.hero h1{font-size:25px}.stat strong{font-size:17px}.table tr{padding:10px}.coin-name{font-size:12px}.spark{width:60px}}
+</style>
+</head>
+<body>
+<header><div class="brand">◈ Crypto<span>Track</span></div><nav class="nav"><a class="active" href="#">Prices</a><a href="#watchlist">Watchlist</a><a href="#markets">Markets</a></nav><input id="search" class="search" placeholder="⌕  Search coins…" aria-label="Search cryptocurrencies"></header>
+<main>
+<section class="hero"><div><h1>Crypto market, at a glance.</h1><p>Live prices, market data, and trends for the coins you follow.</p></div><div class="status" id="status">● Connecting to market data…</div></section>
+<section class="stats">
+<div class="stat"><label>Total market cap</label><strong id="marketcap">—</strong><span id="mcapchange" class="positive">Loading…</span></div>
+<div class="stat"><label>24h trading volume</label><strong id="volume">—</strong><span class="positive">Global market</span></div>
+<div class="stat"><label>BTC dominance</label><strong id="btcdom">—</strong><span class="muted">Bitcoin share</span></div>
+<div class="stat"><label>Coins tracked</label><strong id="count">—</strong><span class="muted">Top market assets</span></div>
+</section>
+<div class="toolbar" id="markets"><div class="tabs"><button class="tab active" data-filter="all">All assets</button><button class="tab" data-filter="favorites">★ Watchlist</button><button class="tab" data-filter="gainers">Top gainers</button><button class="tab" data-filter="losers">Top losers</button></div><select id="currency"><option value="usd">USD ($)</option><option value="eur">EUR (€)</option><option value="gbp">GBP (£)</option></select></div>
+<div class="panel table-wrap"><table class="table"><thead><tr><th>#</th><th>Name</th><th>Price</th><th>24h</th><th>Market cap</th><th>Volume (24h)</th><th>7d trend</th><th></th></tr></thead><tbody id="rows"><tr><td colspan="8" style="text-align:center;padding:40px;color:#91a4c5">Fetching live crypto prices…</td></tr></tbody></table></div>
+<footer>Market data powered by CoinGecko · Refreshes automatically every 60 seconds · Not investment advice</footer>
+</main>
+<script>
+const API='https://api.coingecko.com/api/v3';
+let coins=[], favorites=new Set(JSON.parse(localStorage.getItem('ct-favs')||'[]')), filter='all', currency='usd';
+const fmt=(n)=>n==null?'—':new Intl.NumberFormat('en-US',{style:'currency',currency:currency.toUpperCase(),maximumFractionDigits:n<1?6:2}).format(n);
+const compact=(n)=>n==null?'—':new Intl.NumberFormat('en-US',{notation:'compact',maximumFractionDigits:2}).format(n);
+async function load(){
+ try{
+  const [m,c]=await Promise.all([
+   fetch(`${API}/global`).then(r=>{if(!r.ok)throw Error('Market API unavailable');return r.json()}),
+   fetch(`${API}/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=true&price_change_percentage=24h`).then(r=>{if(!r.ok)throw Error('Price API unavailable');return r.json()})
+  ]);
+  coins=c;const g=m.data;document.getElementById('marketcap').textContent=compact(g.total_market_cap[currency]);document.getElementById('volume').textContent=compact(g.total_volume[currency]);document.getElementById('btcdom').textContent=(g.market_cap_percentage.btc||0).toFixed(1)+'%';document.getElementById('count').textContent=c.length;document.getElementById('mcapchange').textContent=(g.market_cap_change_percentage_24h>=0?'▲ ':'▼ ')+Math.abs(g.market_cap_change_percentage_24h).toFixed(2)+'% (24h)';document.getElementById('mcapchange').className=g.market_cap_change_percentage_24h>=0?'positive':'negative';document.getElementById('status').textContent='● Live · Updated '+new Date().toLocaleTimeString();render();
+ }catch(e){document.getElementById('status').textContent='● Data connection issue';document.getElementById('rows').innerHTML=`<tr><td colspan="8" style="text-align:center;padding:35px;color:#ff8798">${e.message}. Check your connection or try again shortly.</td></tr>`}
+}
+function spark(data,up){if(!data||data.length<2)return '';let min=Math.min(...data),max=Math.max(...data),range=max-min||1;let pts=data.map((v,i)=>`${i/(data.length-1)*95},${25-(v-min)/range*22}`).join(' ');return `<svg class="spark" viewBox="0 0 95 28"><polyline points="${pts}" fill="none" stroke="${up?'#18d99a':'#ff667b'}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`}
+function render(){
+ let q=document.getElementById('search').value.toLowerCase();let list=coins.filter(x=>x.name.toLowerCase().includes(q)||x.symbol.toLowerCase().includes(q));
+ if(filter==='favorites')list=list.filter(x=>favorites.has(x.id));if(filter==='gainers')list=list.sort((a,b)=>(b.price_change_percentage_24h||0)-(a.price_change_percentage_24h||0)).slice(0,20);if(filter==='losers')list=list.sort((a,b)=>(a.price_change_percentage_24h||0)-(b.price_change_percentage_24h||0)).slice(0,20);
+ document.getElementById('rows').innerHTML=list.map((x,i)=>{let p=x.price_change_percentage_24h||0,up=p>=0;return `<tr><td>${x.market_cap_rank||i+1}</td><td><div class="coin"><img src="${x.image}" alt=""><div><span class="coin-name">${x.name}</span><span class="symbol">${x.symbol.toUpperCase()}</span></div></div></td><td><b>${fmt(x.current_price)}</b></td><td class="${up?'positive':'negative'}">${up?'▲':'▼'} ${Math.abs(p).toFixed(2)}%</td><td>${compact(x.market_cap)}</td><td>${compact(x.total_volume)}</td><td>${spark(x.sparkline_in_7d?.price,up)}</td><td><button class="star ${favorites.has(x.id)?'on':''}" onclick="toggleFav('${x.id}')" aria-label="Toggle favorite">${favorites.has(x.id)?'★':'☆'}</button></td></tr>`}).join('')||'<tr><td colspan="8" style="text-align:center;padding:30px">No coins match this view.</td></tr>';
+}
+function toggleFav(id){favorites.has(id)?favorites.delete(id):favorites.add(id);localStorage.setItem('ct-favs',JSON.stringify([...favorites]));render()}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;render()});
+document.getElementById('search').addEventListener('input',render);document.getElementById('currency').onchange=e=>{currency=e.target.value;load()};
+load();setInterval(load,60000);
+</script>
+</body></html>
